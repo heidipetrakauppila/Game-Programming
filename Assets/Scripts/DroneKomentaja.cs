@@ -13,9 +13,6 @@ public class DroneKomentaja : MonoBehaviour
     [SerializeField]
     float drooninNopeus = 1f;
 
-   
-
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -37,7 +34,7 @@ public class DroneKomentaja : MonoBehaviour
     {
         // ( x, y, z ) -> 0, 0, 1
         // ( x ,y ) -> 0, 1
-        Vector3 voimaVektoriDronelle = new Vector3(wasdLiike.x, 0f, wasdLiike.y);
+        Vector3 voimaVektoriDronelle = new Vector3(wasdLiike.x*drooninNopeus, 0f, wasdLiike.y*drooninNopeus);
         droneFysiikka.AddRelativeForce( voimaVektoriDronelle);
     }
 }
