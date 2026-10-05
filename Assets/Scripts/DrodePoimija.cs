@@ -4,29 +4,59 @@ using UnityEngine.InputSystem;
 public class DrodePoimija : MonoBehaviour
 {
     
-    InputAction rNappiPaienettu;
+    InputAction rNappiPainettu;
+    InputAction tNappiPainettu;
+
     GameObject poimittavaEsine;
+
+    [SerializeField]
+    GameObject[] poimittavatEsineet;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-       rNappiPaienettu = InputSystem.actions.FindAction("Poiminta"); 
+       rNappiPainettu = InputSystem.actions.FindAction("Poiminta"); 
+       tNappiPainettu = InputSystem.actions.FindAction("PoimiUseita");
        poimittavaEsine = GameObject.Find("MustaherukkaJuomaa"); 
+       poimittavatEsineet = GameObject.FindGameObjectsWithTag("PoimittavaEsine");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (rNappiPaienettu.IsPressed())
+        // R-napilla haetaan yksi poimittava esine, joka kentässä on.
+        if ( rNappiPainettu.IsPressed() )
         {
             Debug.Log("R-poiminta nappi painettu");
             float etaisyysPoimittavaanEsineeseen = Vector3.Distance(transform.position, poimittavaEsine.transform.position);
-            Debug.Log("Etäisyys poimittavaan esineeseen: " + etaisyysPoimittavaanEsineeseen);
+            Debug.Log("Etäisyys poimittavaan esineeseen " + etaisyysPoimittavaanEsineeseen);
             //JOS etäisyys poimittavaan esineeseen on pienempi kuin 1.4f
-            if (etaisyysPoimittavaanEsineeseen < 1.4f)
+            if( etaisyysPoimittavaanEsineeseen < 1.4f )
             {
                 Debug.Log("Esine on poimittavissa. Poimittiin esine: " + poimittavaEsine.name );
                 poimittavaEsine.SetActive(false);
+            }
+        }
+
+        // T-napilla haetaan kentästä kaikki poimittavat, joita siellä on. 
+        // Jos esineet, tai esine on lähempänä kuin 1.4f, niin poimitaan se pois pelistä
+        if ( tNappiPainettu.IsPressed() )
+        {
+            Debug.Log("T-poiminta nappi painettu" + poimittavatEsineet.Length );
+            for ( int index = 0; index < poimittavatEsineet.Length; index++ )
+            {
+                GameObject esine = poimittavatEsineet[index];
+                Debug.Log("Käsitellään esinettä: " + esine.name + " käsiteltävä indeksi: " + index);
+                
+                float etais = Vector3.Distance(transform.position, esine.transform.position);
+                Debug.Log("Etäisyys esineeseen: " + etais);
+                
+                //JOS etäisyys poimittavaan esineeseen on pienempi kuin 1.4f
+                if ( etais < 1.4f )
+                {
+                    Debug.Log("Esine on poimittavissa. Poimittiin esine: " + esine.name);
+                    esine.SetActive(false);
+                }
             }
         }
     }
